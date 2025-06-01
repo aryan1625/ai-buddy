@@ -157,38 +157,80 @@ ${relevantHistory}
     const writer = writable.getWriter();
     const encoder = new TextEncoder();
     const streamReader = stream.body!.getReader();
-    // Read from the stream and write to the writable stream
-    let fullResponse = "";
+    let responseBuffer = ""; // For database storage
 
     (async () => {
       try {
         while (true) {
           const { done, value } = await streamReader.read();
           if (done) break;
-          const text = new TextDecoder().decode(value);
-          fullResponse += text;
-          await writer.write(encoder.encode(text));
+
+          const textChunk = new TextDecoder().decode(value);
+          console.log("🔍 Raw textChunk:", textChunk);
+          let cleanedChunk = textChunk;
+
+          // Enhanced cleaning logic
+          try {
+            // Handle JSON object with numeric keys
+            const parsed = JSON.parse(textChunk);
+            if (
+              parsed &&
+              typeof parsed === "object" &&
+              Object.keys(parsed).every(k => !isNaN(Number(k)))
+            ) {
+              cleanedChunk = Object.values(parsed).join(" ");
+            }
+          } catch {
+            try {
+              // Convert to valid JSON by wrapping
+              const wrapped = `{${textChunk}}`.replace(/^\{\s*(\d+)\s*:/, '{"$1":');
+              const parsed = JSON.parse(wrapped);
+              const keys = Object.keys(parsed);
+              if (keys.length === 1) {
+                cleanedChunk = parsed[keys[0]];
+              }
+            } catch {
+              // Fallback regex extraction
+              const match = textChunk.match(/^\s*\d+\s*:\s*"((?:\\"|[^"])*)"\s*$/);
+              if (match) {
+                try {
+                  cleanedChunk = JSON.parse(`"${match[1]}"`);
+                } catch {
+                  cleanedChunk = match[1];
+                }
+              }
+            }
+          }
+
+          // Stream immediately to client
+          console.log("🔍 Cleaned chunk:", cleanedChunk);
+          await writer.write(encoder.encode(cleanedChunk));
+          
+          // Accumulate for database storage
+          responseBuffer += cleanedChunk;
         }
 
         await writer.close();
 
-        // Save streamed response to memory and DB
-        await memoryManager.writeToHistory(fullResponse.trim(), companionKey);
-        await prismadb.companion.update({
-          where: { id: chatId },
-          data: {
-            messages: {
-              create: {
-                content: fullResponse.trim(),
-                role: "system",
-                userId: user.id,
+        // Save to database AFTER streaming completes
+        const fullResponse = responseBuffer.trim();
+        if (fullResponse) {
+          await memoryManager.writeToHistory(fullResponse, companionKey);
+          await prismadb.companion.update({
+            where: { id: chatId },
+            data: {
+              messages: {
+                create: {
+                  content: fullResponse,
+                  role: "system",
+                  userId: user.id,
+                },
               },
             },
-          },
-        });
-        // console.log("Generated response:", fullResponse.trim());
+          });
+        }
       } catch (err) {
-        console.error("Stream error:", err);
+        console.error("Stream processing error:", err);
         await writer.abort(err);
       }
     })();
@@ -198,6 +240,71 @@ ${relevantHistory}
         "Content-Type": "text/plain; charset=utf-8",
       },
     });
+    // Read from the stream and write to the writable stream
+    // let fullResponse = "";
+
+    // (async () => {
+    //   try {
+    //     while (true) {
+    //       const { done, value } = await streamReader.read();
+    //       if (done) break;
+
+    //       const textChunk = new TextDecoder().decode(value);
+    //       console.log("🔍 Raw textChunk:", textChunk);
+    //       let cleanedChunk = textChunk;
+
+    //       try {
+    //         // Handle JSON with numeric keys
+    //         const parsed = JSON.parse(textChunk);
+    //         if (
+    //           parsed &&
+    //           typeof parsed === "object" &&
+    //           Object.keys(parsed).every((k) => !isNaN(Number(k)))
+    //         ) {
+    //           cleanedChunk = Object.values(parsed).join(" ");
+    //         }
+    //       } catch {
+    //         // Improved regex: Handles optional whitespace/newlines and extracts text
+    //         const match = textChunk.match(/^\s*\d+\s*:\s*"([\s\S]*?)"\s*$/);
+    //         if (match && match[1] !== undefined) {
+    //           cleanedChunk = match[1]; // Extract text inside quotes
+    //         }
+    //       }
+
+          
+    //       fullResponse += cleanedChunk;
+    //       console.log("🔍 Cleaned chunk:", cleanedChunk);
+    //       await writer.write(encoder.encode(cleanedChunk));
+    //     };
+
+    //     await writer.close();
+
+    //     // Save streamed response to memory and DB
+    //     await memoryManager.writeToHistory(fullResponse.trim(), companionKey);
+    //     await prismadb.companion.update({
+    //       where: { id: chatId },
+    //       data: {
+    //         messages: {
+    //           create: {
+    //             content: fullResponse.trim(),
+    //             role: "system",
+    //             userId: user.id,
+    //           },
+    //         },
+    //       },
+    //     });
+    //     // console.log("Generated response:", fullResponse.trim());
+    //   } catch (err) {
+    //     console.error("Stream error:", err);
+    //     await writer.abort(err);
+    //   }
+    // })();
+
+    // return new NextResponse(readable, {
+    //   headers: {
+    //     "Content-Type": "text/plain; charset=utf-8",
+    //   },
+    // });
 
     
           
