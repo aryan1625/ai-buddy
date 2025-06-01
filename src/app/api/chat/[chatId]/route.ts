@@ -12,7 +12,7 @@ import {NextRequest, NextResponse} from "next/server";
 import {MemoryManager} from "@/lib/memory";
 import { rateLimit } from "@/lib/rate-limit";
 import prismadb from "@/lib/prismadb";
-export async function POST(request: Request,{params}:{params:{chatId: string}}){
+export async function POST(request: Request,{params}:{params:Promise<{chatId: string}>}){
     try {
         const {prompt} = await request.json();
         const user = await currentUser();
@@ -166,7 +166,7 @@ ${relevantHistory}
           if (done) break;
 
           const textChunk = new TextDecoder().decode(value);
-          console.log("🔍 Raw textChunk:", textChunk);
+          // console.log("🔍 Raw textChunk:", textChunk);
           let cleanedChunk = textChunk;
 
           // Enhanced cleaning logic
@@ -203,7 +203,7 @@ ${relevantHistory}
           }
 
           // Stream immediately to client
-          console.log("🔍 Cleaned chunk:", cleanedChunk);
+          // console.log("🔍 Cleaned chunk:", cleanedChunk);
           await writer.write(encoder.encode(cleanedChunk));
           
           // Accumulate for database storage

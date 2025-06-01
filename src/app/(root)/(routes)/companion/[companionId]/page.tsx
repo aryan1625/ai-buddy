@@ -3,9 +3,9 @@ import prismadb from "@/lib/prismadb";
 import CompanionForm from "./components/companion-form";
 import { RedirectToSignIn } from "@clerk/nextjs";
 interface CompanionIdPageProps {
-    params:{
+    params: Promise<{
         companionId: string,
-    }
+    }>
 }
 const CompanionPage = async({params}:CompanionIdPageProps)=>{
     const {userId} = await auth();

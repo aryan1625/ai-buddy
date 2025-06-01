@@ -5,9 +5,7 @@ import {auth} from "@clerk/nextjs/server"
 import { redirect } from "next/navigation";
 import {ChatClient} from "./components/client";
 interface ChatIdPageProps{
-    params:{
-        chatId: string
-    }
+    params: Promise<{ chatId: string }>
 }
 const ChatIdPage = async({
     params

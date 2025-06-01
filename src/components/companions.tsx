@@ -1,4 +1,4 @@
-import { Companion } from "@/prisma/client"
+import { Companion } from "@prisma/client"
 import Image from "next/image"
 import { Card, CardHeader, CardFooter } from "./ui/card"
 import Link from "next/link"
@@ -42,7 +42,7 @@ export const Companions = ({
                         </CardHeader>
                         <CardFooter className="flex items-center justify-between text-xs text-muted-foreground">
                             <p className="lowercase">
-                                @{item.username}
+                                @{item.userName}
                             </p>
                             <div className="flex items-center ">
                                 <MessagesSquare className="w-3 h-3 mr-1"/>

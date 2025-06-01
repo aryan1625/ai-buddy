@@ -3,10 +3,10 @@ import { Categories } from "@/components/categories";
 import prismadb from "@/lib/prismadb";
 import { Companions } from "@/components/companions";
 interface RootPageProps{
-  searchParams:{
+  searchParams:Promise<{
     categoryId: string;
     name: string;
-  }
+  }>
 }
 const RootPage = async({
   searchParams
