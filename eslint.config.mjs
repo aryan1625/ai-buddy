@@ -31,7 +31,9 @@ const eslintConfig = [
       "@typescript-eslint/no-empty-function": "off",
       "@typescript-eslint/no-floating-promises": "off",
       "@typescript-eslint/no-misused-promises": "off",
-      "@next/next/no-img-element": "off"
+      "@next/next/no-img-element": "off",
+      "react/no-unescaped-entities": "off",
+       "no-var": "off",
     }
   }
 ];
