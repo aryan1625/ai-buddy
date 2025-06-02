@@ -22,6 +22,7 @@ model Category{
 
 model Companion{
   id                String @id @default(uuid())
+  isPublic          Boolean @default(false)
   userId            String
   userName          String
   src               String

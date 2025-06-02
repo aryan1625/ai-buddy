@@ -1,7 +1,9 @@
 import { SearchInput } from "@/components/searchInput";
 import { Categories } from "@/components/categories";
 import prismadb from "@/lib/prismadb";
+import { checkSubscription } from "@/lib/subscription";
 import { Companions } from "@/components/companions";
+import { currentUser } from "@clerk/nextjs/server";
 interface RootPageProps{
   searchParams:Promise<{
     categoryId: string;
@@ -11,13 +13,19 @@ interface RootPageProps{
 const RootPage = async({
   searchParams
 }:RootPageProps)=>{
+  const isPro = await checkSubscription();
+  const user = await currentUser();
   const {categoryId,name} = await searchParams;
   const data = await prismadb.companion.findMany({
     where:{
       categoryId: categoryId,
       name:{
         contains: name
-      }
+      },
+      OR: [
+      { isPublic: true },
+      ...(isPro && user?.id ? [{userId:user.id}] : [])
+      ]
     },
     orderBy:{
       createdAt: "desc",
