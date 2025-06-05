@@ -1,9 +1,8 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 # 🤖 AI Buddy
 
 AI Buddy is a personalized AI chat application built using **Next.js**, **Ollama**, and **LangChain**. It allows you to chat with custom AI companions powered by open-source LLMs running locally on your machine. The app supports streaming responses, memory, and retrieval-based augmentation via Pinecone and Redis.
 
-> 🚀 Deployed on Vercel: [https://your-app.vercel.app](https://your-app.vercel.app)  
+> 🚀 Deployed on Vercel: [https://your-app.vercel.app](https://ai-buddy-rctt.vercel.app/)  
 > 🧠 Powered locally by [Ollama](https://ollama.com) models like `llama2`, `mistral`, etc.
 
 ---
@@ -13,8 +12,8 @@ AI Buddy is a personalized AI chat application built using **Next.js**, **Ollama
 - 🔥 Real-time Chat UI with Streaming
 - 🧠 Memory backed by Redis & LangChain
 - 📚 RAG (Retrieval-Augmented Generation) using Pinecone
-- 🔐 Secure access to your local LLM via `ngrok` + token auth
-- 🧑‍🤝‍🧑 Create multiple AI companions (with database persistence using Prisma & PlanetScale)
+- 🔐 Use of Local open source Ollama server to use models like llama2 and mistral
+- 🧑‍🤝‍🧑 Create multiple AI companions (with database persistence using Prisma & Supabase)
 - ☁️ Vercel deployment-friendly with secure local inference
 
 ---
@@ -23,10 +22,10 @@ AI Buddy is a personalized AI chat application built using **Next.js**, **Ollama
 
 - **Frontend**: Next.js 14 (App Router), Tailwind CSS, React
 - **Backend**: LangChain, Ollama, TypeScript API routes
-- **Database**: PlanetScale (MySQL) via Prisma
+- **Database**: Supabase (PostgresSQL) via Prisma
 - **Vector DB**: Pinecone
 - **Cache/Memory**: Redis via Upstash
-- **Auth/Secrets**: Environment-based token gating
+- **Auth**: Clerk Authorisation
 - **Deployment**: Vercel (for frontend) + Local Ollama (for model inference)
 
 ---
@@ -40,26 +39,33 @@ AI Buddy is a personalized AI chat application built using **Next.js**, **Ollama
 ```bash
 git clone https://github.com/aryan1625/ai-buddy.git
 cd ai-buddy
-
-## Getting Started
-
-First, run the development server:
-
+```
+### 2. Install Dependencies
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm install
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### 3. Install and Start Ollama
+- first install Ollama, save the env variables in path and then 
+```bash
+ollama serve
+```
+- pull a LLM like mistral or llama2
+- ```bash
+  ollama pull mistral
+  ollama pull llama2
+  ```
+- run the model
+- ```bash
+  ollama run mistral
+  ollama run llama2
+  ```
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+  ### 4. Start Dev Server
+  ```bash
+  npm run dev
+  ```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
 
 ## Learn More
 
