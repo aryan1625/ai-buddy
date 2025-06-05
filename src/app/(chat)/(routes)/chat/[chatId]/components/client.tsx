@@ -65,7 +65,6 @@ import { FormEvent, useState, useRef, useEffect } from "react";
 import ChatForm from "@/components/chat-form";
 import ChatMessages from "@/components/chat-messages";
 import { ChatMessageProps } from "@/components/chat-message";
-import { headers } from "next/headers";
 
 interface ChatClientProps {
   companion: Companion & {
@@ -103,94 +102,29 @@ export const ChatClient = ({ companion }: ChatClientProps) => {
     setInput("");
     setIsLoading(true);
 
-    // try {
-    //   // Add temporary assistant message
-    //   setMessages((current) => [...current, { role: "system", content: "", isLoading: true }]);
-    //   const isProd = process.env.NODE_ENV === "production";
-    //   if(isProd){
-    //     const mockMessage = `This is a mock AI generated response.To generate your own response please go to the [Github Link](https://github.com/aryan1625/ai-buddy) and follow the steps.`
-    //     setMessages((current) => {
-    //       const newMessages = [...current];
-    //       const lastIndex = newMessages.length - 1;
-    //       newMessages[lastIndex] = {
-    //         ...newMessages[lastIndex],
-    //         content: mockMessage,
-    //         isLoading: false
-    //       };
-    //       return newMessages;
-    //     });
-    //   }else{
-    //   const response = await fetch(`/api/chat/${companion.id}`, {
-    //     method: "POST",
-    //     headers: { "Content-Type": "application/json" },
-    //     body: JSON.stringify({ prompt: input }),
-    //   });
-
-    //   if (!response.body) throw new Error("No response body");
-      
-    //   const reader = response.body.getReader();
-    //   const decoder = new TextDecoder();
-    //   let assistantMessage = "";
-      
-    //   while (true) {
-    //     const { done, value } = await reader.read();
-    //     if (done) break;
-        
-    //     const chunk = decoder.decode(value);
-    //     assistantMessage += chunk;  
-    //     // Update the last message incrementally
-    //     setMessages((current) => {
-    //       const newMessages = [...current];
-    //       const lastIndex = newMessages.length - 1;
-          
-    //       if (newMessages[lastIndex].role === "system") {
-    //         newMessages[lastIndex] = {
-    //           ...newMessages[lastIndex],
-    //           content: assistantMessage,
-    //           isLoading: false
-    //         };
-    //       }
-    //       return newMessages;
-    //     });
-    //   }
-    // }
-    // // Update database and refresh
-    // router.refresh();
-    // } catch (error) {
-    //   console.error("Fetch error:", error);
-    //   // Update with error message
-    //   setMessages((current) => {
-    //     const newMessages = [...current];
-    //     const lastIndex = newMessages.length - 1;
-        
-    //     if (newMessages[lastIndex].role === "system") {
-    //       newMessages[lastIndex] = {
-    //         role: "system",
-    //         content: "Sorry, I encountered an error",
-    //         isLoading: false
-    //       };
-    //     }
-    //     return newMessages;
-    //   });
-    // } 
     try {
-      const headers: Record<string, string> = {
-        "Content-Type": "application/json",
-      };
-
-      if (process.env.NODE_ENV === "production") {
-        headers["authorization"] = process.env.NEXT_PUBLIC_OLLAMA_SECRET!;
-      }
-  
+      // Add temporary assistant message
+      setMessages((current) => [...current, { role: "system", content: "", isLoading: true }]);
+      const isProd = process.env.NODE_ENV === "production";
+      if(isProd){
+        const mockMessage = `This is a mock AI generated response.To generate your own response please go to the [Github Link](https://github.com/aryan1625/ai-buddy) and follow the steps.`
+        setMessages((current) => {
+          const newMessages = [...current];
+          const lastIndex = newMessages.length - 1;
+          newMessages[lastIndex] = {
+            ...newMessages[lastIndex],
+            content: mockMessage,
+            isLoading: false
+          };
+          return newMessages;
+        });
+      }else{
       const response = await fetch(`/api/chat/${companion.id}`, {
         method: "POST",
-        headers,
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ prompt: input }),
       });
 
-      if (!response.ok) {
-        throw new Error(`Error: ${response.status}`);
-      }
       if (!response.body) throw new Error("No response body");
       
       const reader = response.body.getReader();
@@ -218,23 +152,26 @@ export const ChatClient = ({ companion }: ChatClientProps) => {
           return newMessages;
         });
       }
+    }
     // Update database and refresh
     router.refresh();
-      // stream response logic here...
     } catch (error) {
-      const mockMessage = `Could not connect to Ollama. Please try again or follow the setup at [Github](https://github.com/aryan1625/ai-buddy).`;
+      console.error("Fetch error:", error);
+      // Update with error message
       setMessages((current) => {
         const newMessages = [...current];
         const lastIndex = newMessages.length - 1;
-        newMessages[lastIndex] = {
-          ...newMessages[lastIndex],
-          content: mockMessage,
-          isLoading: false,
-        };
+        
+        if (newMessages[lastIndex].role === "system") {
+          newMessages[lastIndex] = {
+            role: "system",
+            content: "Sorry, I encountered an error",
+            isLoading: false
+          };
+        }
         return newMessages;
       });
-    }
-    finally {
+    } finally {
       setIsLoading(false);
     }
   };

@@ -17,14 +17,7 @@ export async function POST(request: Request,{params}:{params:Promise<{chatId: st
         const {prompt} = await request.json();
         const user = await currentUser();
         if(!user || !user.firstName || !user.id){
-          return new NextResponse("Unauthorized",{status: 401});
-        }
-        //authorisation for ollama
-        if (process.env.NODE_ENV === "production") {
-          const authHeader = request.headers.get("authorization");
-          if (authHeader !== process.env.OLLAMA_SECRET) {
-            return new Response("Unauthorized", { status: 401 });
-          }
+            return new NextResponse("Unauthorized",{status: 401});
         }
         const identifier = request.url + "-" + user.id;
         const { success } = await rateLimit(identifier);
@@ -75,8 +68,7 @@ export async function POST(request: Request,{params}:{params:Promise<{chatId: st
         }
         const llm = new Ollama({
             model: "llama2",  // Using Llama2 model
-            // baseUrl: "http://127.0.0.1:11434", // Ollama server URL
-            baseUrl: process.env.OLLAMA_URL, // Ollama server URL
+            baseUrl: "http://127.0.0.1:11434", // Ollama server URL
             temperature: 0.7, // Adjust creativity (0-1)
           });
 
