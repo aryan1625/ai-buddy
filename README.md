@@ -46,22 +46,22 @@ npm install
 ```
 
 ### 3. Install and Start Ollama
-- first install Ollama, save the env variables in path and then 
+#### 1. First install Ollama, save the env variables in path and then 
 ```bash
 ollama serve
 ```
-- pull a LLM like mistral or llama2
-- ```bash
+#### 2. Pull a LLM like mistral or llama2
+ ```bash
   ollama pull mistral
   ollama pull llama2
   ```
-- run the model
-- ```bash
+#### 3. run the model
+```bash
   ollama run mistral
   ollama run llama2
   ```
 
-  ### 4. Start Dev Server
+#### 4. Start Dev Server
   ```bash
   npm run dev
   ```
