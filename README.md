@@ -1,4 +1,45 @@
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🤖 AI Buddy
+
+AI Buddy is a personalized AI chat application built using **Next.js**, **Ollama**, and **LangChain**. It allows you to chat with custom AI companions powered by open-source LLMs running locally on your machine. The app supports streaming responses, memory, and retrieval-based augmentation via Pinecone and Redis.
+
+> 🚀 Deployed on Vercel: [https://your-app.vercel.app](https://your-app.vercel.app)  
+> 🧠 Powered locally by [Ollama](https://ollama.com) models like `llama2`, `mistral`, etc.
+
+---
+
+## ✨ Features
+
+- 🔥 Real-time Chat UI with Streaming
+- 🧠 Memory backed by Redis & LangChain
+- 📚 RAG (Retrieval-Augmented Generation) using Pinecone
+- 🔐 Secure access to your local LLM via `ngrok` + token auth
+- 🧑‍🤝‍🧑 Create multiple AI companions (with database persistence using Prisma & PlanetScale)
+- ☁️ Vercel deployment-friendly with secure local inference
+
+---
+
+## 🛠️ Tech Stack
+
+- **Frontend**: Next.js 14 (App Router), Tailwind CSS, React
+- **Backend**: LangChain, Ollama, TypeScript API routes
+- **Database**: PlanetScale (MySQL) via Prisma
+- **Vector DB**: Pinecone
+- **Cache/Memory**: Redis via Upstash
+- **Auth/Secrets**: Environment-based token gating
+- **Deployment**: Vercel (for frontend) + Local Ollama (for model inference)
+
+---
+
+## ⚙️ Local Setup Instructions
+
+> This guide helps you run **AI Buddy locally**, with Ollama installed on your own machine.
+
+### 1. Clone the Repository
+
+```bash
+git clone https://github.com/aryan1625/ai-buddy.git
+cd ai-buddy
 
 ## Getting Started
 
