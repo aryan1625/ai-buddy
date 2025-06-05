@@ -66,6 +66,24 @@ ollama serve
   npm run dev
   ```
 
+#### v. Update the .env file
+```.env
+NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY = your_clerk_publishable_key (starts from pk)
+CLERK_SECRET_KEY=your_clerk_secret_key (starts from sk)
+NEXT_PUBLIC_CLERK_SIGN_IN_URL=/sign-in
+NEXT_PUBLIC_CLERK_SIGN_UP_URL=/sign-up
+DATABASE_URL="postgres://postgres.[your-supabase-project]:[password]@aws-0-[aws-region].pooler.supabase.com:6543/postgres"
+NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME=your_cloudinary_name(for image upload)
+PINECONE_INDEX=pinecone_index_name
+PINECONE_ENVIRONMENT=pinecone_env
+PINECONE_API_KEY=your_pinecone_api_key
+UPSTASH_REDIS_REST_URL=your_upstash_redis_url
+UPSTASH_REDIS_REST_TOKEN=your_upstash_redis_token
+STRIPE_API_KEY=your_stripe_api_key (starts from sk)
+STRIPE_WEBHOOK_SECRET=your_stripe_webhook_secret_key (starts from wh)
+NEXT_PUBLIC_APP_URL=http://localhost:3000
+```
+
 
 ## Learn More
 
