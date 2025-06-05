@@ -83,6 +83,13 @@ STRIPE_API_KEY=your_stripe_api_key (starts from sk)
 STRIPE_WEBHOOK_SECRET=your_stripe_webhook_secret_key (starts from wh)
 NEXT_PUBLIC_APP_URL=http://localhost:3000
 ```
+## 🖼️ App Preview
+
+![AI Buddy Screenshot home](public/homepage.png)
+![AI Buddy Screenshot chat](public/chat.png)
+![AI Buddy Screenshot subscribe](public/subscribe.png)
+![AI Buddy Screenshot settings](public/settings.png)
+
 
 
 ## Learn More
